@@ -1,0 +1,108 @@
+<!--
+  UniFi API Wazuh Rules
+  Rule IDs: 100500-100513
+  Source: /var/log/sentinel/unifi/unifi-events.log
+  Decoder: unifi-api
+  Level 10+ triggers Discord alerts via existing integration
+-->
+<group name="unifi,">
+
+  <rule id="100500" level="3">
+    <decoded_as>unifi-api</decoded_as>
+    <match>DEVICE_STATE_CHANGE</match>
+    <description>UniFi device state change</description>
+    <group>unifi,</group>
+  </rule>
+
+  <rule id="100501" level="10">
+    <if_sid>100500</if_sid>
+    <match>state=OFFLINE</match>
+    <description>UniFi device went OFFLINE</description>
+    <group>unifi,</group>
+  </rule>
+
+  <rule id="100502" level="5">
+    <decoded_as>unifi-api</decoded_as>
+    <match>FIRMWARE_UPDATE</match>
+    <description>UniFi device firmware update available</description>
+    <group>unifi,</group>
+  </rule>
+
+  <rule id="100503" level="7">
+    <decoded_as>unifi-api</decoded_as>
+    <match>CLIENT_NEW</match>
+    <description>New client connected to UniFi network</description>
+    <group>unifi,</group>
+  </rule>
+
+  <rule id="100504" level="10">
+    <decoded_as>unifi-api</decoded_as>
+    <match>ROGUE_DEVICE</match>
+    <description>Unknown/rogue device detected on UniFi network</description>
+    <group>unifi,</group>
+  </rule>
+
+  <rule id="100505" level="12">
+    <decoded_as>unifi-api</decoded_as>
+    <match>FIREWALL_CHANGE</match>
+    <description>UniFi firewall policy changed</description>
+    <group>unifi,</group>
+  </rule>
+
+  <rule id="100506" level="12">
+    <decoded_as>unifi-api</decoded_as>
+    <match>NETWORK_CHANGE</match>
+    <description>UniFi network configuration changed</description>
+    <group>unifi,</group>
+  </rule>
+
+  <rule id="100507" level="12">
+    <decoded_as>unifi-api</decoded_as>
+    <match>WIFI_CHANGE</match>
+    <description>UniFi WiFi SSID configuration changed</description>
+    <group>unifi,</group>
+  </rule>
+
+  <rule id="100508" level="10">
+    <decoded_as>unifi-api</decoded_as>
+    <match>WAN_FAILOVER</match>
+    <description>UniFi WAN failover event</description>
+    <group>unifi,</group>
+  </rule>
+
+  <rule id="100509" level="8">
+    <decoded_as>unifi-api</decoded_as>
+    <match>DEVICE_THRESHOLD</match>
+    <description>UniFi device CPU/memory above threshold</description>
+    <group>unifi,</group>
+  </rule>
+
+  <rule id="100510" level="5">
+    <decoded_as>unifi-api</decoded_as>
+    <match>DEVICE_PENDING</match>
+    <description>New UniFi device pending adoption</description>
+    <group>unifi,</group>
+  </rule>
+
+  <rule id="100511" level="12">
+    <decoded_as>unifi-api</decoded_as>
+    <match>DNS_CHANGE</match>
+    <description>UniFi DNS policy changed</description>
+    <group>unifi,</group>
+  </rule>
+
+  <rule id="100512" level="10">
+    <decoded_as>unifi-api</decoded_as>
+    <match>ACL_CHANGE</match>
+    <description>UniFi ACL rule changed</description>
+    <group>unifi,</group>
+  </rule>
+
+  <rule id="100513" level="3">
+    <decoded_as>unifi-api</decoded_as>
+    <match>COLLECTOR_OK</match>
+    <description>UniFi collector health check OK</description>
+    <group>unifi,</group>
+  </rule>
+
+</group>
