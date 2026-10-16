@@ -1,0 +1,10 @@
+<!--
+  UniFi API Log Decoder
+  Log format: YYYY-MM-DDTHH:MM:SSZ unifi-collector[PID]: EVENT_TYPE|field1=val1|field2=val2|...
+  Source: /var/log/sentinel/unifi/unifi-events.log
+-->
+<decoder name="unifi-api">
+  <prematch>unifi-collector</prematch>
+  <regex offset="after_prematch">\S+]: (\S+)\|(.+)</regex>
+  <order>event_type,extra_data</order>
+</decoder>

@@ -1,0 +1,65 @@
+---
+name: Lint and Validate
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  yamllint:
+    runs-on: iac
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run yamllint
+        run: |
+          echo "Running yamllint on all YAML files..."
+          yamllint -c .yamllint.yml -f parsable .
+
+  trivy-fs:
+    runs-on: iac
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trivy filesystem scan
+        run: |
+          echo "Running Trivy filesystem scan..."
+          trivy fs --scanners vuln,misconfig --severity HIGH,CRITICAL .
+
+  flake8:
+    runs-on: iac
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run flake8 on Python files
+        run: |
+          python3 -m pip install --user --quiet --break-system-packages flake8
+          echo "Running flake8 on all Python files..."
+          python3 -m flake8 --max-line-length=120 --extend-ignore=E501 .
+
+  shellcheck:
+    runs-on: iac
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run shellcheck on shell scripts
+        run: |
+          echo "Running shellcheck on all .sh files..."
+          find . -name '*.sh' -not -path './.git/*' -print0 | xargs -0 shellcheck --format=gcc
+
+  gitleaks:
+    runs-on: iac
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gitleaks secret detection
+        run: |
+          gitleaks detect --source . --report-format json --report-path gitleaks-report.json --no-git
+          echo "No secrets detected."
+
+  pytest:
+    # OPS-690: add pytest gate so test-pass claims are enforced by CI.
+    # Tests use stdlib unittest only; pytest discovers and runs them.
+    # No external deps beyond the local unifi package (already in-tree).
+    runs-on: iac
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pytest
+        run: python3 -m pip install --user --quiet --break-system-packages pytest
+      - name: Run pytest
+        run: python3 -m pytest tests/ -v
